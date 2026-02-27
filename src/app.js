@@ -1,13 +1,31 @@
-const express = require('express');
+import express from 'express';
+import pingRoutes from './router/ping.routes.js';
+import authRoutes from './router/auth.router.js';
+import logRequest from './middleware/log.middleware.js';
+import corsOptions from './middleware/cors.middleware.js'
+// import bcrypt from 'bcrypt';
+// import redis from './config/rd.js'
+
 const app = express();
 
+// app.get("/test", async (req, res) => {
+//     try {
+//         // 使用实例进行操作
+//         await redis.set("user:name", "Gemini", "EX", 3600);
+//         const value = await redis.get("user:name");
+
+//         res.send(`Redis 中的值是: ${value}`);
+//     } catch (error) {
+//         res.status(500).send("Redis 操作失败");
+//     }
+// });
+
 app.use(express.json());
+app.use(corsOptions);
+app.use(logRequest);
+app.use('/', pingRoutes);
+app.use('/auth', authRoutes);
 
-app.get('/ping', async (req, res) => {
-  const [rows] = await pool.query('SELECT 1 AS ok');
-  res.json({ ok: rows[0].ok });
-});
+// console.log(await bcrypt.hash('123456', 10));
 
-app.listen(3000, () => {
-  console.log('Server running at http://localhost:3000');
-});
+export default app;
